@@ -1,329 +1,350 @@
 # AI-Based-Scientific-Report-Analyzer-using-Gemini-2.5-Flash-API-and-Fine-Tuned-Mistral-7B-Model-
 Scientific research papers are rich in structured equations, variables, tables, and quantitative results but extracting and analyzing that manually is tedious. AI-Based Scientific Report Analyzer automatically reads research PDFs, identifies mathematical equations and tabular data, computes results, and generates a structured author-ready output. 
 
-Chapter 1 – Introduction
-1.1 Background
+# Chapter 1 – Introduction
 
+## 1.1 Background
 Modern research output is overwhelmingly digital and data-intensive. Scientific reports, especially in domains such as cryptography, IoT, and medical engineering, contain structured information embedded in text and mathematical expressions. Manual extraction of these elements for comparative or computational analysis is time-consuming.
 
-Advances in Large Language Models (LLMs) and multimodal AI have opened pathways for automating the reading, understanding, and mathematical processing of such documents.
-This internship focused on building a system that bridges document intelligence with symbolic reasoning—an AI tool capable of parsing complex scientific papers, identifying all mathematical entities, performing relevant computations, and delivering structured analytical outputs for authors and reviewers.
+Advances in Large Language Models (LLMs) and multimodal AI have opened pathways for automating the reading, understanding, and mathematical processing of such documents. This internship focused on building a system that bridges document intelligence with symbolic reasoning—an AI tool capable of parsing complex scientific papers, identifying all mathematical entities, performing relevant computations, and delivering structured analytical outputs for authors and reviewers.
 
-1.2 Problem Statement
-
+## 1.2 Problem Statement
 Researchers often need to verify equations, recompute performance metrics, or cross-reference variable definitions from PDFs. Existing AI tools are limited to text summarization or OCR-based extraction without mathematical reasoning.
 
 The problem addressed here is to design and develop an AI model that can automatically extract, interpret, and solve equations from scientific research papers and produce accurate, human-readable results.
 
-1.3 Objectives
+## 1.3 Objectives
+- Automate extraction of equations, variables, and tables from research PDFs.
+- Compute results and classify variable types and bit sizes.
+- Compare cloud-based (Gemini API) and fine-tuned local LLM (Mistral 7B LoRA) performance.
+- Design a modular architecture deployable via cloud and local inference.
+- Generate structured output suitable for publication or validation.
 
-Automate extraction of equations, variables, and tables from research PDFs.
-
-Compute results and classify variable types and bit sizes.
-
-Compare cloud-based (Gemini API) and fine-tuned local LLM (Mistral 7B LoRA) performance.
-
-Design a modular architecture deployable via cloud and local inference.
-
-Generate structured output suitable for publication or validation.
-
-1.4 Scope and Significance
-
+## 1.4 Scope and Significance
 The analyzer targets domains where reproducibility and computational verification are essential—cryptography, IoT security, biomedical signal processing, etc.
 
 It enables reviewers and researchers to validate reported formulas and results without manual effort, thus improving transparency and accuracy in scientific publication.
 
-1.5 Project Environment
+## 1.5 Internship Environment
+- **Organization:** National Institute of Technology Puducherry  
+- **Team:** Yusuf Fayas, Sabareesh K S, and Nandhagopalan S  
+- **Tools & Frameworks:** Python, Gemini 2.5 Flash API, LLaMA Factory, LoRA, Hugging Face Hub, Firebase, AWS Cloud, React Native  
+- **Computing Setup:** GPU-enabled AI server for fine-tuning experiments
 
-Organization: National Institute of Technology Puducherry
+# Chapter 2 – Literature Review
 
-Team: Yusuf Fayas, Sabareesh K S, and Nandhagopalan S
+## 2.1 Scientific Document Understanding
+Early document-analysis systems relied on OCR and rule-based parsing. Modern AI models like LayoutLM, DocFormer, and Gemini’s multimodal variants combine textual, visual, and spatial features, allowing direct reasoning over PDF structures.
 
-Tools & Frameworks: Python, Gemini 2.5 Flash API, LLaMA Factory, LoRA, Hugging Face Hub, Firebase, AWS Cloud, React Native
+## 2.2 Equation Extraction and Computation
+Techniques such as MathPix OCR and LaTeX tokenizers convert mathematical regions into structured markup. Recent LLMs (GPT-4, Gemini 2.5, Claude 3) can interpret equations and perform symbolic reasoning. Fine-tuned models (Mistral, LLaMA 2 Math, DeepSeek) show improved accuracy for scientific tasks.
 
-Computing Setup: GPU-enabled AI server for fine-tuning experiments
+## 2.3 Fine-Tuning LLMs with LoRA and LLaMA Factory
+Low-Rank Adaptation (LoRA) adds small trainable matrices to existing model weights, reducing GPU memory usage. LLaMA Factory provides structured interfaces for supervised fine-tuning and experiment tracking.
 
-Chapter 2 – Literature Review
-2.1 Scientific Document Understanding
+## 2.4 Gemini 2.5 Flash API
+Gemini 2.5 Flash is a multimodal model optimized for reasoning over text, images, and PDFs using fast streaming inference.
 
-Early systems used OCR and rule-based parsing. Modern models such as LayoutLM, DocFormer, and Gemini multimodal variants combine text, visual, and spatial reasoning to analyze PDFs with higher accuracy.
+## 2.5 Related Work Analysis
+Reference paper: “An Efficient ECC and Fuzzy Verifier-Based User Authentication Protocol for IoT-Enabled WSNs” (Sudhakar et al., 2025).  
+Contains elliptic curve equations, hash functions, and cost tables—ideal for validating extraction and computation modules.
 
-2.2 Equation Extraction and Computation
+# Chapter 3 – System Analysis and Design
 
-Systems like MathPix and LaTeX tokenizers convert math regions into structured markup.
+## 3.1 Functional Requirements
+- **Input:** PDF document.
+- **Process:** Extract text, tables, equations → symbolic parsing → computation.
+- **Output:** Structured table (equation, result, operators, operands).
+- **Modes:** Gemini API vs. Fine-Tuned Mistral 7B.
+- **Storage:** Firebase + AWS S3.
 
-Recent LLMs (GPT-4, Gemini 2.5, Claude 3, DeepSeek) can directly interpret equations and perform symbolic reasoning.
-Fine-tuned models such as Mistral, LLaMA-2-Math demonstrate domain-specific improvements.
+## 3.2 Non-Functional Requirements
+- Accuracy ≥ 95%.
+- Latency < 10 sec for 5-page PDF.
+- Scalable and secure.
+- Portable across cloud/local GPU.
 
-2.3 Fine-Tuning LLMs with LoRA and LLaMA Factory
+## 3.3 Architecture (5 Layers)
+1. Input Handler  
+2. Pre-Processor  
+3. Analyzer Core  
+4. Computation Engine  
+5. Report Generator  
 
-Low-Rank Adaptation (LoRA) injects small trainable matrices into existing weights, reducing GPU memory cost.
+## 3.4 Data Flow
+1. User uploads PDF  
+2. Gemini → Cloud / Mistral → Local  
+3. Store results in Firebase  
+4. Compare metrics  
 
-LLaMA Factory enables structured supervised fine-tuning and experiment management.
-Fine-tuning Mistral 7B v0.1 on equation–solution datasets improves scientific reasoning.
+## 3.5 Module Description
+| Module | Purpose | Tech |
+|--------|----------|--------|
+| PDF Pre-Processor | Extract text/tables/equations | pdfminer, PyMuPDF |
+| Gemini Analyzer | Cloud multimodal extraction | Google AI API |
+| Mistral Analyzer | Local symbolic reasoning | LoRA + Transformers |
+| Comparator | Compare outputs/time | Python |
+| Formatter | Build JSON/CSV dashboards | React + Firebase |
 
-2.4 Gemini 2.5 Flash API
+## 3.6 System Specifications
+- NVIDIA A100 GPU  
+- Python 3.10, PyTorch, Node.js  
+- Custom dataset (~15k equation–solution pairs)
 
-Gemini 2.5 Flash is a fast multimodal model capable of reasoning over text, images, and PDFs.
-Streaming inference enables fast extraction of structured outputs from documents.
+# Chapter 4 – Implementation Details
 
-2.5 Related Work
-
-The reference paper “An Efficient ECC and Fuzzy Verifier-Based User Authentication Protocol for IoT-Enabled WSNs” (Sudhakar et al., 2025) contains well-structured cryptographic equations, hash functions, and cost tables—ideal for validating the system.
-
-Chapter 3 – System Analysis and Design
-3.1 Functional Requirements
-
-Input: Scientific PDF
-
-Process: Extract text, tables, equations → symbolic reasoning
-
-Output: Structured table with equation, operators, operands, and computed value
-
-Comparison: Gemini API vs. Mistral 7B
-
-Storage: Firebase (metadata), AWS S3 (archives)
-
-3.2 Non-Functional Requirements
-
-Accuracy: ≥ 95% equation identification
-
-Latency: < 10s for a 5-page PDF
-
-Scalability: Batch processing support
-
-Security: Encrypted data, authenticated API keys
-
-Portability: Cloud + Local GPU support
-
-3.3 System Architecture
-
-Five main layers:
-
-Input Handler
-
-Pre-Processor
-
-Analyzer Core (Gemini / Mistral)
-
-Computation Engine
-
-Report Generator
-
-3.4 Data Flow
-
-User uploads PDF
-
-Gemini → Cloud analysis
-Mistral → Local GPU inference
-
-Results stored in Firebase
-
-Metrics evaluated (accuracy, latency, tokens)
-
-3.5 Module Description
-
-PDF Pre-Processor :	Extract text, tables, equations	- pdfminer, PyMuPDF
-
-Gemini Analyzer :	Multimodal extraction & JSON parsing - Google AI API
-
-Mistral Analyzer :	Local inference via fine-tuned model - Transformers + LoRA
-
-Comparator :	Compare outputs, timing - Custom Python
-
-Output Formatter :	Generate CSV/JSON and dashboard display - React + Firebase
-
-3.6 System Specifications
-
-Hardware: NVIDIA A100, 64 GB RAM
-
-Software: Ubuntu 22.04, PyTorch, Node.js
-
-APIs: Gemini Flash, Hugging Face
-
-Dataset: ~15,000 equation–solution pairs
-
-Chapter 4 – Implementation Details
-4.1 Workflow
-
+## 4.1 Workflow
 Two pipelines:
+1. **Gemini Flash (cloud)** for multimodal extraction  
+2. **Mistral 7B LoRA (local GPU)** for symbolic math
 
-Gemini 2.5 Flash (Cloud) – handles multimodal extraction
+## 4.2 Module Implementation
 
-Fine-Tuned Mistral 7B (Local) – performs symbolic computation
+### 4.2.1 PDF Pre-Processing
+- pdfminer.six, PyMuPDF, OpenCV  
+- Steps:
+  1. Convert PDF to images  
+  2. Segment text/equations  
+  3. OCR → LaTeX  
+  4. Save JSON tokens  
 
-4.2 Module Details
-4.2.1 PDF Pre-Processing
 
-Libraries: pdfminer.six, PyMuPDF, OpenCV
-Steps:
+# Chapter 4 – Implementation Details
 
-Convert PDF to images
+## 4.1 System Workflow Overview
+The AI Scientific Report Analyzer follows a two-pipeline architecture:
 
-Detect text & equations
+1. **Gemini 2.5 Flash Pipeline (Cloud-Based)**  
+   - Optimized for multimodal PDF analysis (text + images).  
+   - Fast extraction with structured JSON output.
 
-OCR math regions
+2. **Fine-Tuned Mistral 7B Pipeline (Local GPU)**  
+   - Specialized for symbolic reasoning and equation solving.  
+   - Built using LoRA fine-tuning with LLaMA Factory.
 
-Store tokens as JSON
+Each PDF passes through pre-processing, content extraction, model analysis, computation, and report generation.
 
-for page in document:
-    text = page.get_text("text")
-    equations = detect_equations(page)
-    save_to_json({"text": text, "equations": equations})
+## 4.2 Module Implementation Details
 
-4.2.2 Gemini Flash Integration
+### 4.2.1 PDF Pre-Processing and Extraction
+**Libraries Used:** `pdfminer.six`, `PyMuPDF`, `OpenCV`, `Pandas`
 
-Batch upload
+**Steps:**
+1. Convert PDF pages into image frames.  
+2. Detect text, tables, and equation blocks using layout segmentation.  
+3. OCR mathematical regions and convert them into LaTeX / MathML tokens.  
+4. Store structured outputs into JSON.
 
-Prompt engineering
+4.2.2 Gemini 2.5 Flash Integration
 
-Receives JSON with equation, operators, operands, result
+Uses Google AI Studio with API key + secure endpoints.
 
-Advantages: Fast, multimodal
-Limitations: Occasional truncation, limited control
+Batch uploads PDF content through streaming mode.
 
-4.2.3 Fine-Tuned Mistral 7B (LoRA)
+Prompt Example:
 
-Dataset: 15k equation–solution pairs
-Training Parameters:
+Extract all equations and variables from this research paper.
+For each equation, compute the result, operators, and operands.
 
+
+Output Format:
+A JSON object containing:
+
+equation
+
+operators
+
+operands
+
+result
+
+confidence score
+
+Advantages:
+
+Fast processing (< 6 seconds for 5 pages)
+
+Handles image-based PDFs well
+
+Limitations:
+
+Sometimes truncates long tables
+
+Has limited control over decoding parameters (temperature, beams)
+
+4.2.3 Fine-Tuned Mistral 7B Model with LoRA
+
+Fine-tuned using LLaMA Factory on a GPU server.
+
+Dataset (≈ 15,000 entries)
+
+Algebraic equations
+
+Cryptographic cost functions
+
+Scientific formula evaluation tasks
+
+Example Training Pair:
+
+Input:
+Compute the result of: E = mc^2 for m=2, c=3
+
+Output:
+E = 18; Operators: *, ^; Operands: 2, 3
+
+Training Parameters
+Parameter	Value
 Base Model	Mistral-7B-v0.1
-
-LoRA r	8
-
-α	16
-
-LR	2e-4
-
+LoRA Rank (r)	8
+Alpha	16
+Dropout	0.05
+Batch Size	4
+Learning Rate	2e-4
 Epochs	3
-
-Max Seq Len	4096
-
+Max Seq Length	4096
+Optimizer	AdamW 8-bit
+Scheduler	Cosine with warmup
+Precision	bfloat16
 GPU	A100 80GB
+
+After training, the LoRA adapter was merged, and the final checkpoint was uploaded to Hugging Face.
 
 4.2.4 Computation Engine
 
-Uses SymPy to compute:
+Uses SymPy for symbolic and numeric evaluation.
 
-Result
+For each extracted equation, the engine determines:
 
-Operators
+Numeric result
 
-Operands
+Operators used
 
-Bit sizes
+Operands extracted
 
-4.2.5 Output Formatting
+Variable bit sizes (cryptographic parameters)
 
-Tabular result:
+Example:
+
+expr = sympify("E = m * c**2")
+result = expr.subs({"m": 2, "c": 3})
+
+4.2.5 Output Formatting and Storage
+
+Final results are converted into a structured table:
 
 | Equation | Result | Operators | Operands | Bit Size |
 
-Stored in Firebase, shown on React dashboard.
+Outputs are:
 
-4.3 UI Prototype
+Saved to Firebase Firestore
 
-React Native
+Archived in AWS S3
 
-PDF upload
+Displayed in a React dashboard
 
-Equation viewer
+4.3 User Interface Prototype
 
-Comparison mode
+A cross-platform UI was built using React Native.
+
+Features:
+
+Upload PDF from device
+
+View extracted equations and variables
+
+Compare outputs from Gemini and Mistral pipelines
+
+Real-time progress bar
+
+Latency & accuracy graphs
 
 4.4 Cloud Deployment
 
-Gemini on Google Cloud
+Deployment was implemented using a hybrid multi-cloud approach:
 
-Firebase Auth + DB
+Gemini API called through Google Cloud Functions
 
-AWS S3 storage
+Firebase for authentication and database sync
 
-Hugging Face inference endpoint for Mistral
+AWS S3 to store processed result files
 
-Chapter 5 – Results and Discussion
+Hugging Face Inference Endpoint serves the fine-tuned Mistral 7B model
 
-5.1 Dataset
+This architecture ensures:
 
-Reference paper with 50+ equations, 10+ tables.
+Fast cloud extraction
 
-5.2 Gemini Results
+Accurate local symbolic computation
 
-84% extraction accuracy
+Scalable storage
 
-Output under 6 seconds
-
-Minor errors in notation
-
-5.3 Mistral Results
-
-95% extraction accuracy
-
-12 seconds per PDF
-
-Strong symbolic consistency
-
-5.4 Comparison
-Metric            | Gemini Flash | Mistral 7B
-
-Equation Accuracy | 84%	         |95%
-
-Table Recognition | Excellent    |Good
-
-Computation	  | 90%	         |93%
-
-Latency	          | 6s	         |12
-
-Cloud Dependency	High	Low
-
-Cost	Higher	Minimal
-
-5.5 Discussion
-
-Gemini excels in multimodal extraction;
+Modular deployment design
 
 
-Mistral excels in symbolic accuracy.
+---
 
-The combined architecture gives the best results.
+# Chapter 5 – Results and Discussion
 
-Chapter 6 – Comparison and Evaluation
+## 5.1 Dataset
+Reference paper contained:
+- 50+ equations  
+- 10+ computational tables
 
-6.1 Technical Evaluation
+## 5.2 Gemini 2.5 Flash Results
+- 84% extraction accuracy  
+- ~6 sec per PDF  
+- Minor notation mismatches  
 
-Gemini: fast OCR + multimodal
+## 5.3 Fine-Tuned Mistral 7B Results
+- 95% extraction accuracy  
+- ~12 sec per PDF  
+- Strong symbolic precision  
 
-Mistral: customizable, stable symbolic math
+## 5.4 Comparative Performance
+| Metric | Gemini Flash | Mistral 7B |
+|--------|--------------|------------|
+| Equation Accuracy | 84% | 95% |
+| Table Extraction | Excellent | Good |
+| Computation Accuracy | 90% | 93% |
+| Latency | 6s | 12s |
 
-LoRA improved precision and reduced forgetting
+## 5.5 Discussion
+Gemini → strong multimodal extraction  
+Mistral → strong symbolic reasoning  
+Combined → best pipeline
 
-6.2 Cost Analysis
-Component  | Gemini Cloud | Local Mistral
-Infra	   | API Billing  | One-time GPU
-Cost/run   | ₹0.15/page	  | Negligible
+# Chapter 6 – Comparison and Evaluation
 
-6.3 Scalability
+## 6.1 Technical Evaluation
+- Gemini: fast OCR + multimodal processing  
+- Mistral: fully customizable + stable symbolic math  
+- LoRA boosts accuracy while reducing training cost  
 
-Hybrid architecture:
-Gemini → Extraction
-Mistral → Computation
+## 6.2 Cost Analysis
+| Component | Gemini Cloud | Local Mistral |
+|----------|--------------|---------------|
+| Infra | API Billing | One-time GPU |
+| Cost/run | ₹0.15/page | Negligible |
 
-Chapter 7 – Conclusion & Future Work
-7.1 Conclusion
+## 6.3 Scalability
+Hybrid model:
+- Gemini → extraction  
+- Mistral → computation  
 
-The system successfully extracts, interprets, and solves scientific equations with ~93% accuracy, combining Gemini Flash and fine-tuned Mistral 7B.
+# Chapter 7 – Conclusion and Future Work
 
-7.2 Future Enhancements
+## 7.1 Conclusion
+The system successfully automates extraction, interpretation, and computation of equations from scientific PDFs using Gemini 2.5 Flash and a fine-tuned Mistral 7B model. Achieved ~93% overall accuracy.
 
-Add GPT-4 / Claude 3 integrations
+## 7.2 Future Enhancements
+- Add more LLMs (Claude 3, GPT-4 Turbo).  
+- Expand dataset to biomedical, chemistry, physics.  
+- Deploy as a public web portal (rights reserved).  
+- Export to LaTeX/IEEE templates (rights reserved).  
 
-Expand datasets
+# Appendix A – Folder Structure
 
-Release as public portal (rights reserved)
 
-Export to LaTeX / IEEE formats
-
-Appendix A – Folder Structure
 research-analyzer
 
 │
@@ -332,57 +353,25 @@ research-analyzer
 
 │   ├── __pycache__
 
-│   │   ├── __init__.cpython-310.pyc
-
-│   │   ├── __init__.cpython-311.pyc
-
-│   │   ├── __init__.cpython-313.pyc
-
-│   │
-
 │   ├── database
 
 │   │   └── app.db
 
-│   │
-
 │   ├── models
-
-│   │   ├── __pycache__
 
 │   │   └── user.py
 
-│   │
-
 │   ├── routes
-
-│   │   ├── __pycache__
-
-│   │   ├── analysis.cpython-310.pyc
-
-│   │   ├── analysis.cpython-311.pyc
-
-│   │   ├── analysis.cpython-313.pyc
-
-│   │   ├── user.cpython-310.pyc
-
-│   │   ├── user.cpython-311.pyc
-
-│   │   ├── user.cpython-313.pyc
 
 │   │   ├── analysis.py
 
 │   │   └── user.py
-
-│   │
 
 │   ├── static
 
 │   │   ├── favicon.ico
 
 │   │   └── index.html
-
-│   │
 
 │   ├── __init__.py
 
@@ -394,13 +383,13 @@ research-analyzer
 
 ├── requirements.txt
 
-├── trained model
+└── trained model
 
-Appendix B – Hardware & Software Environment
 
-Processor: Intel Xeon 64-bit
+# Appendix B – Hardware and Software Environment
 
-GPU: NVIDIA A100 80GB
-• OS: Ubuntu 22.04 LTS 
-• IDE: VS Code, Jupyter Lab 
-• Libraries: Transformers, SymPy, Torch, LLaMA Factory, Firebase SDK
+- **Processor:** Intel Xeon 64-bit  
+- **GPU:** NVIDIA A100 80 GB  
+- OS: Ubuntu 22.04 LTS 
+- IDE: VS Code, Jupyter Lab 
+- Libraries: Transformers, SymPy, Torch, LLaMA Factory, Firebase SDK
