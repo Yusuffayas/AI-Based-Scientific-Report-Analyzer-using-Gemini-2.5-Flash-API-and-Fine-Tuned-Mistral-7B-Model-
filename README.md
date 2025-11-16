@@ -1,0 +1,2 @@
+# AI-Based-Scientific-Report-Analyzer-using-Gemini-2.5-Flash-API-and-Fine-Tuned-Mistral-7B-Model-
+Scientific research papers are rich in structured equations, variables, tables, and quantitative results but extracting and analyzing that manually is tedious. AI-Based Scientific Report Analyzer automatically reads research PDFs, identifies mathematical equations and tabular data, computes results, and generates a structured author-ready output. 
